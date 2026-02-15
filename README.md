@@ -32,7 +32,7 @@ The main goals were to:
 ### 1) Data Preprocessing (Important!)
 Since both models rely on distances, feature scaling matters a lot.
 
-✅ We used **StandardScaler** to:
+We used **StandardScaler** to:
 - set feature mean to **0**
 - set feature standard deviation to **1**
 
@@ -60,7 +60,7 @@ We tested several **radius** values and measured accuracy.
 - **Medium radius:** accuracy improves at first as more neighbors are included
 - **Too large radius:** includes points from many classes → accuracy drops (class boundaries blur)
 
-✅ To keep the loop running, we used a **try/except** block:
+To keep the loop running, we used a **try/except** block:
 - if no neighbors were found, we assigned accuracy = **0** for that radius value
 
 ---
@@ -81,8 +81,8 @@ We tested several **radius** values and measured accuracy.
 
 ## Conclusion
 
-- ✅ **KNN is the better and simpler choice** for datasets like Wine (clean clusters, fairly uniform density).
-- ✅ **Radius Neighbors can be useful** when the dataset has big density differences and a distance cutoff makes more sense than a fixed neighbor count.
+- **KNN is the better and simpler choice** for datasets like Wine (clean clusters, fairly uniform density).
+- **Radius Neighbors can be useful** when the dataset has big density differences and a distance cutoff makes more sense than a fixed neighbor count.
 
 ---
 
