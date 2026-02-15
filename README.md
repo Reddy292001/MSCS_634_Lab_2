@@ -126,7 +126,5 @@ Open and run:
 - `README.md` — this file
 
 ---
-
-## Notes
-
-If you see **RNN** in this project, it refers to **Radius Neighbors**, not neural networks.
+## Author
+Sai Venkata Bharath Reddy Singareddy - MSCS 634
