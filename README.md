@@ -1,37 +1,132 @@
-Wine Classification with KNN and RNN Classifiers
-This repository contains a Jupyter Notebook for a lab assignment that explores and compares the performance of K-Nearest Neighbors (KNN) and Radius Neighbors (RNN) classifiers on the sklearn Wine dataset.
+# Wine Classification with KNN and Radius Neighbors (RNN)
 
-Purpose
-The primary goal of this lab was to:
+This repo contains a Jupyter Notebook that compares two **distance-based** classifiers on the **scikit-learn Wine dataset**:
 
-Implement and evaluate K-Nearest Neighbors (KNN) and Radius Neighbors (RNN) classifiers.
-Analyze how the choice of key parameters—k for KNN and radius for RNN—impacts model accuracy.
-Visualize the performance trends to identify optimal parameter values.
-Compare the two models and provide insights into when one might be preferable over the other for a given dataset.
-Key Insights
-K-Nearest Neighbors (KNN) Performance
-The accuracy of the KNN model was highly sensitive to the number of neighbors, k.
+- **K-Nearest Neighbors (KNN)**
+- **Radius Neighbors (RNN)** *(RNN here means **Radius Neighbors**, not Recurrent Neural Networks)*
 
-Low k (e.g., k=1): The model was likely overfitting to the training data, resulting in lower accuracy on the test set due to high variance and sensitivity to noise.
-Optimal k (e.g., k=5, 11): A "sweet spot" was observed where the model achieved its highest accuracy. At these values, the classifier effectively captured the local structure of the data without being overly influenced by noise or outliers.
-High k (e.g., k=21): As k became too large, the model started to underfit. The decision boundaries became overly smooth, and the model's accuracy decreased as it began to misclassify points near class boundaries by including too many neighbors from other classes.
-Radius Neighbors (RNN) Performance
-The RNN model's performance was critically dependent on the radius value.
+---
 
-Small Radius: A radius that is too small can lead to instances where a test point has no neighbors within the specified radius, causing a ValueError. This makes RNN less robust to sparse regions of the feature space.
-Increasing Radius: As the radius increased, more neighbors were included for classification, which initially improved accuracy. However, there is a point of diminishing returns.
-Large Radius: An excessively large radius can encompass points from multiple classes, leading to poor classification accuracy and effectively blurring the class boundaries.
-Comparison and Observations
-For the Wine dataset, KNN generally outperformed RNN in both accuracy and stability.
+## Goal of the Lab
 
-KNN's Advantage: The Wine dataset has relatively uniform density and well-defined clusters. KNN's approach of using a fixed number of neighbors is more effective in this scenario, as it adapts to local density variations naturally.
-RNN's Challenge: Selecting an appropriate radius is difficult. A single global radius may be too small for sparse regions and too large for dense regions, leading to inconsistent performance across the dataset.
-Conclusion: For datasets with consistent class density like the Wine dataset, KNN is the more reliable and straightforward choice. RNN might be preferable in datasets with significant variations in point density, where a fixed distance threshold is more meaningful than a fixed neighbor count.
-Challenges and Decisions
-Challenges Faced
-Selecting RNN Radius: Choosing an appropriate range for the radius parameter was the primary challenge. Unlike k, the radius is a distance value in a multi-dimensional space, making its initial selection non-intuitive. We had to handle potential ValueError exceptions for radii that were too small.
-Data Scaling: Both KNN and RNN are distance-based algorithms, meaning they are highly sensitive to the scale of the features. Failing to standardize the data would have resulted in features with larger ranges dominating the distance calculation, leading to biased and inaccurate models.
-Decisions Made
-Standardization: A deliberate decision was made to use StandardScaler to normalize all features to have a mean of 0 and a standard deviation of 1 before training the models. This ensures that all features contribute equally to the distance computation.
-Systematic Parameter Tuning: Instead of guessing, we implemented a systematic approach, testing a predefined list of k and radius values to plot their effect on accuracy and identify the optimal parameter empirically.
-Error Handling for RNN: To prevent the RNN evaluation loop from crashing, a try-except block was implemented to catch ValueError for cases where no neighbors were found, assigning an accuracy of 0 for that specific radius value.
+The main goals were to:
+
+- Build and evaluate **KNN** and **Radius Neighbors** classifiers.
+- Study how key parameters affect accuracy:
+  - **k** (number of neighbors) for KNN
+  - **radius** (distance threshold) for Radius Neighbors
+- Plot accuracy trends to find good parameter values.
+- Compare both models and explain when each one makes sense.
+
+---
+
+## Dataset
+
+- **Dataset:** Wine (from `sklearn.datasets`)
+- **Task:** Multi-class classification (predict the wine class based on features)
+
+---
+
+## What We Did
+
+### 1) Data Preprocessing (Important!)
+Since both models rely on distances, feature scaling matters a lot.
+
+✅ We used **StandardScaler** to:
+- set feature mean to **0**
+- set feature standard deviation to **1**
+
+This prevents features with larger ranges from dominating the distance calculations.
+
+---
+
+### 2) KNN Model (K-Nearest Neighbors)
+
+We tested several values of **k** and measured test accuracy.
+
+**Key behavior we observed:**
+- **Low k (e.g., 1):** often overfits (too sensitive to noise)
+- **Middle k (e.g., 5, 11):** best balance → highest accuracy (sweet spot)
+- **High k (e.g., 21):** can underfit (too “smoothed out” decisions)
+
+---
+
+### 3) Radius Neighbors Model (RNN = Radius Neighbors)
+
+We tested several **radius** values and measured accuracy.
+
+**Key behavior we observed:**
+- **Too small radius:** a test point may have **zero neighbors**, which can raise a `ValueError`
+- **Medium radius:** accuracy improves at first as more neighbors are included
+- **Too large radius:** includes points from many classes → accuracy drops (class boundaries blur)
+
+✅ To keep the loop running, we used a **try/except** block:
+- if no neighbors were found, we assigned accuracy = **0** for that radius value
+
+---
+
+## Key Insights (Summary)
+
+### KNN (Overall Better on Wine)
+- KNN was **more stable** and usually **more accurate** on this dataset.
+- The Wine dataset has fairly consistent density and clear clusters, so using a **fixed number of neighbors** worked well.
+
+### Radius Neighbors (More Sensitive)
+- Choosing one global radius is tricky:
+  - too small → no neighbors
+  - too large → mixed classes
+- This made Radius Neighbors **less reliable** for the Wine dataset.
+
+---
+
+## Conclusion
+
+- ✅ **KNN is the better and simpler choice** for datasets like Wine (clean clusters, fairly uniform density).
+- ✅ **Radius Neighbors can be useful** when the dataset has big density differences and a distance cutoff makes more sense than a fixed neighbor count.
+
+---
+
+## Challenges We Faced
+
+- **Picking a good radius:** not intuitive in multi-dimensional space
+- **Handling errors:** very small radii can cause no-neighbor cases
+- **Scaling features:** without standardization, distance-based models can behave poorly
+
+---
+
+## How to Run
+
+### 1) Install Dependencies
+```bash
+pip install numpy pandas matplotlib scikit-learn seaborn
+```
+
+### 2) Open the Notebook
+Run one of the following:
+
+```bash
+jupyter notebook
+```
+
+or
+
+```bash
+jupyter lab
+```
+
+### 3) Execute the Notebook
+Open and run:
+- `Wine_KNN_RNN_Lab.ipynb`
+
+---
+
+## Repository Contents
+
+- `Wine_KNN_RNN_Lab.ipynb` — main notebook with experiments and plots
+- `README.md` — this file
+
+---
+
+## Notes
+
+If you see **RNN** in this project, it refers to **Radius Neighbors**, not neural networks.
